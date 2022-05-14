@@ -42,6 +42,9 @@ sudo docker images
 172.30.0.101 slave-1
 172.30.0.102 slave-2
 ```
+> 如果在虚拟机中运行docker，则需要把上面的ip改成虚拟机网卡的ip  
+> 并且需要在虚拟机软件内配置`172.30.0.100`网段下这些端口的转发规则  
+> `2181, 8088, 9870, 16000, 16010, 16020`
 
 ## 3. 运行`build.sh`构建镜像
 这个过程大概需要10分钟，请保证网络通畅  
@@ -58,3 +61,15 @@ sudo docker images
 
 ## 5. 使用`remove.sh`删除容器
 运行这个脚本将删除之前创建的所有容器（包括给集群使用的网卡`hadoop`）
+
+## 6. 使用`Phoenix JDBC`连接`Hbase`
+* 使用数据库管理软件连接，需要自行导入`package`中Phoenix安装包的`client`jar文件(JDBC驱动)  
+并且需要配置以下两个连接属性：  
+
+| 属性                                      | 值                                                            |
+|-------------------------------------------|---------------------------------------------------------------|
+| phoenix.schema.isNamespaceMappingEnabled  | true                                                          |
+| hbase.regionserver.wal.codec              | org.apache.hadoop.hbase.regionserver.wal.IndexedWALEditCodec  |
+
+连接的JDBC URL: `jdbc:phoenix:172.30.0.100:2181`
+> **如果docker在虚拟机中运行，则连接ip需要使用虚拟机网卡的ip，并且确认配置好hosts映射**
