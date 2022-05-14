@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+    <property>
+        <name>hbase.rootdir</name>
+        <value>hdfs://master:9000/hbase</value>
+    </property>
+    <property>
+        <name>hbase.tmp.dir</name>
+        <value>/usr/local/hbase/tmp</value>
+    </property>
+    <property>
+        <name>hbase.zookeeper.property.dataDir</name>
+        <value>/usr/local/hbase/zkData</value>
+    </property>
+    <property>
+        <name>hbase.zookeeper.quorum</name>
+        <value>master,slave-1,slave-2</value>
+    </property>
+    <property>
+        <name>hbase.master.info.port</name>
+        <value>16010</value>
+    </property>
+    <property>
+        <name>hbase.cluster.distributed</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>hbase.unsafe.stream.capability.enforce</name>
+        <value>false</value>
+    </property>
+    <property>
+        <name>phoenix.schema.isNamespaceMappingEnabled</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>phoenix.functions.allowUserDefinedFunctions</name>
+        <value>true</value>
+    </property>
+    <property> 
+        <name>hbase.regionserver.wal.codec</name> 
+        <value>org.apache.hadoop.hbase.regionserver.wal.IndexedWALEditCodec</value> 
+    </property>
+</configuration>

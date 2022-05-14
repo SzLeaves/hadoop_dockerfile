@@ -1,0 +1,90 @@
+FROM fedora:latest
+
+LABEL maintainer="Szleaves@github.com"
+
+# 切换镜像源
+RUN rm -rf /etc/yum.repos.d/*.repo
+COPY ./config/fedora_mirror/*.repo /etc/yum.repos.d/
+
+# 修改root密码(密码为root)
+RUN echo "root:root" | chpasswd
+
+# 安装openssh
+RUN dnf install passwd openssl openssh-server openssh-clients iputils hostname -y \
+    && dnf clean all
+
+# 配置ssh并允许root登录
+RUN mkdir /var/run/sshd \
+    && echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \
+    && echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config \
+    && ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N "" \
+    && ssh-keygen -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key -N "" \
+    && ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ""
+
+# 开放端口
+EXPOSE 22 8088 9870 16000 16010
+
+# 指定容器运行时启动sshd服务
+CMD ["/usr/sbin/sshd", "-D"]
+
+# 安装Hadoop,JDK,Hbase,Zookeeper,Phoenix
+COPY ./packages/*.tar.gz /usr/local/
+RUN cd /usr/local \ 
+    && tar -xzvf {JDK_Src} \ 
+    && tar -xzvf {Hadoop_Src} \ 
+    && tar -xzvf {Hbase_Src} \ 
+    && tar -xzvf {ZK_Src} \ 
+    && tar -xzvf {PH_Src} \ 
+    && mv {JDK_Dir} jdk \
+    && mv {Hadoop_Dir} hadoop \
+    && mv {Hbase_Dir} hbase \
+    && mv {ZK_Dir} zookeeper \
+    && mv {PH_Dir} phoenix \
+    && rm -f {Hadoop_Src} {JDK_Src} {Hbase_Src} {ZK_Src} {PH_Src} \
+    && cd /
+
+# 添加环境变量
+ENV JAVA_HOME=/usr/local/jdk \
+    HADOOP_HOME=/usr/local/hadoop \
+    HBASE_HOME=/usr/local/hbase \
+    ZOOKEEPER_HOME=/usr/local/zookeeper \
+    PHOENIX_HOME=/usr/local/phoenix
+ENV PATH $JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$ZOOKEEPER_HOME/bin:$PHOENIX_HOME/bin:$PATH
+COPY ./config/script/profile /etc/profile
+
+# 复制配置文件
+COPY ./config/hadoop_config/* $HADOOP_HOME/etc/hadoop/
+COPY ./config/hbase_config/* $HBASE_HOME/conf/
+COPY ./config/zk_config/zoo.cfg $ZOOKEEPER_HOME/conf/
+COPY ./config/script/*.sh /
+# 配置Phoenix
+RUN ph_server_jar=$(ls $PHOENIX_HOME | grep "phoenix-server") \
+    && ph_pherf_jar=$(ls $PHOENIX_HOME | grep "phoenix-pherf") \
+    && cp $PHOENIX_HOME/$ph_server_jar $HBASE_HOME/lib/ \
+    && cp $PHOENIX_HOME/$ph_pherf_jar $HBASE_HOME/lib/ \
+    && rm -f $PHOENIX_HOME/bin/hbase-site.xml \
+    && ln -s $HBASE_HOME/conf/hbase-site.xml $PHOENIX_HOME/bin/ \
+    && ln -s $HADOOP_HOME/etc/hadoop/core-site.xml $PHOENIX_HOME/bin/ \
+    && ln -s $HADOOP_HOME/etc/hadoop/hdfs-site.xml $PHOENIX_HOME/bin/ \
+    && ln -s /usr/bin/python3 /usr/bin/python \
+    && mkdir -p $ZOOKEEPER_HOME/data
+
+# 修改hadoop启动脚本, 增加启动用户
+RUN sed -i '/#!\/usr\/bin\/env bash/a\
+                HDFS_DATANODE_USER=root\
+                HDFS_DATANODE_SECURE_USER=hdfs\
+                HDFS_NAMENODE_USER=root\
+                HDFS_SECONDARYNAMENODE_USER=root\n' $HADOOP_HOME/sbin/start-dfs.sh \
+    && sed -i '/#!\/usr\/bin\/env bash/a\
+                HDFS_DATANODE_USER=root\
+                HDFS_DATANODE_SECURE_USER=hdfs\
+                HDFS_NAMENODE_USER=root\
+                HDFS_SECONDARYNAMENODE_USER=root\n' $HADOOP_HOME/sbin/stop-dfs.sh \
+    && sed -i '/#!\/usr\/bin\/env bash/a\
+                YARN_RESOURCEMANAGER_USER=root\
+                HADOOP_SECURE_DN_USER=yarn\
+                YARN_NODEMANAGER_USER=root\n' $HADOOP_HOME/sbin/start-yarn.sh \
+    && sed -i '/#!\/usr\/bin\/env bash/a\
+                YARN_RESOURCEMANAGER_USER=root\
+                HADOOP_SECURE_DN_USER=yarn\
+                YARN_NODEMANAGER_USER=root\n' $HADOOP_HOME/sbin/stop-yarn.sh
