@@ -46,7 +46,7 @@ In the container, you can run `init.sh` to initialize cluster (This script will 
 **No recommend** run this script twice.  
 
 After initialize, you can run `start.sh` to start cluster and `stop.sh` to stop cluster.
-> Zookeeper will output `FAILED TO START` when start service, but I have checked log files and doesn't have error infomation. if you have failed to start other service, please comment in issue.
+> Zookeeper will output `FAILED TO START` when start service, but I have checked log files and doesn't have error information. if you have failed to start other service, please comment in issue.
 
 ## 4. Use `cluster.sh` to control containers start/stop
 These script are start/stop cluster in containers automatically.
