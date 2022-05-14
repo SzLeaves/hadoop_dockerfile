@@ -63,13 +63,21 @@ sudo docker images
 运行这个脚本将删除之前创建的所有容器（包括给集群使用的网卡`hadoop`）
 
 ## 6. 使用`Phoenix JDBC`连接`Hbase`
-* 使用数据库管理软件连接，需要自行导入`package`中Phoenix安装包的`client`jar文件(JDBC驱动)  
-并且需要配置以下两个连接属性：  
+* **使用数据库管理软件连接**
+1. 导入`package`中Phoenix安装包的`phoenix-client-hbase`jar文件(JDBC驱动)  
+2. 配置以下两个连接属性：  
 
 | 属性                                      | 值                                                            |
 |-------------------------------------------|---------------------------------------------------------------|
 | phoenix.schema.isNamespaceMappingEnabled  | true                                                          |
 | hbase.regionserver.wal.codec              | org.apache.hadoop.hbase.regionserver.wal.IndexedWALEditCodec  |
 
-连接的JDBC URL: `jdbc:phoenix:172.30.0.100:2181`
+3. 连接的JDBC URL: `jdbc:phoenix:172.30.0.100:2181`
 > **如果docker在虚拟机中运行，则连接ip需要使用虚拟机网卡的ip，并且确认配置好hosts映射**
+
+* **使用Java SQL API连接**
+1. 导入`package`中Phoenix安装包的`phoenix-client-hbase`jar文件(JDBC驱动)  
+2. [下载Phoenix源码包](https://mirrors.bfsu.edu.cn/apache/phoenix/phoenix-5.1.2/phoenix-5.1.2-src.tar.gz)
+3. 将源码包中的`phoenix-hbase-compat-x.x.x/src/main/java`文件夹（版本号可以选最新的）下的`org`文件夹复制到maven项目的`src/main/java`文件夹下
+4. 将`config/hbase_config/hbase-site.xml`复制到maven项目的`src/main/resources`文件夹下
+5. 使用Java SQL API测试连接
