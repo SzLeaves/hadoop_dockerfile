@@ -42,7 +42,8 @@ Add the following mappings to `hosts` file
 This process need network, It takes about 10 minutes.  
 After the build is successful, script will login hadoop master node automatically.
 
-In the container, run `init.sh` to initialize cluster (This script will start cluster automatically). **No recommend** run this script twice.  
+In the container, you can run `init.sh` to initialize cluster (This script will start cluster automatically)  
+**No recommend** run this script twice.  
 
 After initialize, you can run `start.sh` to start cluster and `stop.sh` to stop cluster.
 
