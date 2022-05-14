@@ -93,7 +93,8 @@ sudo docker run --name hadoop-master --hostname master \
     --add-host master:172.30.0.100 \
     --add-host slave-1:172.30.0.101 \
     --add-host slave-2:172.30.0.102 \
-    --net hadoop --ip 172.30.0.100 -d -P -p 2181:2181 hadoop-docker
+    --net hadoop --ip 172.30.0.100 -d -P \
+    -p 2181:2181 -p 9870:9870 -p 8088:8088 -p 16000:16000 -p 16010:16010 -p 16020:16020 hadoop-docker
 
 sudo docker run --name hadoop-slave-1 --hostname slave-1 \
     --add-host master:172.30.0.100 \
