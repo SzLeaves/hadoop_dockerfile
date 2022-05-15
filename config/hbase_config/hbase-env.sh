@@ -144,3 +144,4 @@ export HBASE_DISABLE_HADOOP_CLASSPATH_LOOKUP="true"
 
 export JAVA_HOME=/usr/local/jdk
 export HBASE_MANAGES_ZK=false
+export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native

@@ -85,4 +85,10 @@ export HADOOP_HOME=/usr/local/hadoop
 export HBASE_HOME=/usr/local/hbase
 export ZOOKEEPER_HOME=/usr/local/zookeeper
 export PHOENIX_HOME=/usr/local/phoenix
+
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
+export CLASSPATH=$CLASSPATH:$HADOOP_HOME/lib/*:.
+export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native
+
 export PATH=$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$ZOOKEEPER_HOME/bin:$PHOENIX_HOME/bin:$PATH
