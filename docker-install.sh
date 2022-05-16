@@ -15,9 +15,10 @@ sudo yum clean all
 sudo yum makecache
 sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo https://mirrors.bfsu.edu.cn/docker-ce/linux/centos/docker-ce.repo
-sudo yum install -y docker-ce docker-ce-cli containerd.io
+sudo yum install -y docker-ce docker-ce-cli containerd.io ca-certificates
 
 sudo systemctl enable docker.service
 sudo systemctl start docker.service
+sudo systemctl status docker.service
 sudo docker version
 sudo docker images
