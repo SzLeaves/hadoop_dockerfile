@@ -1,5 +1,7 @@
 # Hadoop Docker to build
 
+Download configure files: [main.zip](https://github.com/SzLeaves/hadoop_dockerfile/archive/refs/heads/main.zip)
+
 ## 1. Install Docker
 docs: https://docs.docker.com/engine/install/  
 

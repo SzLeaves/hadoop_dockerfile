@@ -1,9 +1,12 @@
 # Hadoop Docker to build
 
 [README in English](https://github.com/SzLeaves/hadoop_dockerfile/blob/main/readme_en.md)  
-Docker images include hadoop, hbase, phoenix, zookeeper, based on `fedora:latest`.
+
+Docker images include hadoop, hbase, phoenix, zookeeper, based on `fedora:latest`.  
+Download configure files: [main.zip](https://github.com/SzLeaves/hadoop_dockerfile/archive/refs/heads/main.zip)
 
 该仓库构建的镜像包含hadoop, hbase, phoenix, zookeeper, 基于`fedora:latest`  
+仓库配置文件下载：[main.zip](https://github.com/SzLeaves/hadoop_dockerfile/archive/refs/heads/main.zip)
 
 
 ## 1. 安装Docker
