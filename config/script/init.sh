@@ -14,13 +14,11 @@ do
     ssh $node "source /etc/profile; zkServer.sh start"
 done
 
+# init and start cluster
 hdfs namenode -format
 start-dfs.sh
 start-yarn.sh
 start-hbase.sh
 
-for node in master slave-1 slave-2
-do
-    echo "--> $node jps <---"
-    ssh $node "source /etc/profile; jps"
-done
+# check nodes jps
+source nodejps.sh

@@ -9,13 +9,8 @@ done
 # start hadoop
 start-dfs.sh
 start-yarn.sh
-
 # start hbase
 start-hbase.sh
 
 # check nodes jps
-for node in master slave-1 slave-2
-do
-        echo "--> $node jps <---"
-        ssh $node "source /etc/profile; jps"
-done
+source nodejps.sh
