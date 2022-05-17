@@ -13,4 +13,4 @@ start-yarn.sh
 start-hbase.sh
 
 # check nodes jps
-source nodejps.sh
+source /nodejps.sh
