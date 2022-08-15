@@ -1,4 +1,5 @@
 # Hadoop Docker to build
+**-- 测试性用途，不建议在生产环境布署 --**
 
 [README in English](https://github.com/SzLeaves/hadoop_dockerfile/blob/main/readme_en.md)  
 
@@ -7,7 +8,6 @@ Download configure files: [main.zip](https://github.com/SzLeaves/hadoop_dockerfi
 
 该仓库构建的镜像包含hadoop, hbase, phoenix, zookeeper, 基于`fedora:latest`  
 仓库配置文件下载：[main.zip](https://github.com/SzLeaves/hadoop_dockerfile/archive/refs/heads/main.zip)
-
 
 ## 1. 安装Docker
 docs: https://docs.docker.com/engine/install/  
