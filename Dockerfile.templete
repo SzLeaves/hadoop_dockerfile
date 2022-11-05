@@ -28,7 +28,7 @@ EXPOSE 22 8088 9000 9870 16000 16010 16020
 CMD ["/usr/sbin/sshd", "-D"]
 
 # 安装Hadoop,JDK,Hbase,Zookeeper,Phoenix,Hive及JDBC驱动
-COPY ./packages/*.tar.gz /usr/local/
+COPY ./packages/* /usr/local/
 RUN cd /usr/local \ 
     && tar -xzvf {JDK_Src} \ 
     && tar -xzvf {Hadoop_Src} \ 
