@@ -27,7 +27,7 @@ EXPOSE 22 8088 9000 9870 16000 16010 16020
 # 指定容器运行时启动sshd服务
 CMD ["/usr/sbin/sshd", "-D"]
 
-# 安装Hadoop,JDK,Hbase,Zookeeper,Phoenix
+# 安装Hadoop,JDK,Hbase,Zookeeper,Phoenix,Hive及JDBC驱动
 COPY ./packages/*.tar.gz /usr/local/
 RUN cd /usr/local \ 
     && tar -xzvf {JDK_Src} \ 
@@ -35,12 +35,15 @@ RUN cd /usr/local \
     && tar -xzvf {Hbase_Src} \ 
     && tar -xzvf {ZK_Src} \ 
     && tar -xzvf {PH_Src} \ 
+    && tar -xzvf {HI_Src} \ 
     && mv {JDK_Dir} jdk \
     && mv {Hadoop_Dir} hadoop \
     && mv {Hbase_Dir} hbase \
     && mv {ZK_Dir} zookeeper \
     && mv {PH_Dir} phoenix \
-    && rm -f {Hadoop_Src} {JDK_Src} {Hbase_Src} {ZK_Src} {PH_Src} \
+    && mv {HI_Dir} hive \
+    && mv {JDBC} hive/lib/ \
+    && rm -f {Hadoop_Src} {JDK_Src} {Hbase_Src} {ZK_Src} {PH_Src} {HI_Src} \
     && cd /
 
 # 添加环境变量
@@ -48,15 +51,22 @@ ENV JAVA_HOME=/usr/local/jdk \
     HADOOP_HOME=/usr/local/hadoop \
     HBASE_HOME=/usr/local/hbase \
     ZOOKEEPER_HOME=/usr/local/zookeeper \
-    PHOENIX_HOME=/usr/local/phoenix
-ENV PATH $JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$ZOOKEEPER_HOME/bin:$PHOENIX_HOME/bin:$PATH
+    PHOENIX_HOME=/usr/local/phoenix \
+    HIVE_HOME=/usr/local/hive
+ENV PATH $JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$ZOOKEEPER_HOME/bin:$PHOENIX_HOME/bin:$HIVE_HOME/bin:$PATH
 COPY ./config/script/profile /etc/profile
 
 # 复制配置文件
 COPY ./config/hadoop_config/* $HADOOP_HOME/etc/hadoop/
 COPY ./config/hbase_config/* $HBASE_HOME/conf/
 COPY ./config/zk_config/zoo.cfg $ZOOKEEPER_HOME/conf/
+COPY ./config/hive_config/hive-site.xml $HIVE_HOME/conf/
 COPY ./config/script/*.sh /
+
+# 配置Hive下的guava包
+RUN rm -f $HIVE_HOME/lib/guava-19.0.jar \
+    && cp $HADOOP_HOME/share/hadoop/common/lib/guava-27.0-jre.jar $HIVE_HOME/lib/
+
 # 配置Phoenix
 RUN ph_server_jar=$(ls $PHOENIX_HOME | grep "phoenix-server") \
     && ph_pherf_jar=$(ls $PHOENIX_HOME | grep "phoenix-pherf") \

@@ -19,6 +19,8 @@ hdfs namenode -format
 start-dfs.sh
 start-yarn.sh
 start-hbase.sh
+# init hive
+schematool -initSchema -dbType mysql -verbose
 
 # check nodes jps
 source /nodejps.sh

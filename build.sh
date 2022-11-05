@@ -7,14 +7,20 @@ JDK_DEST="jdk8u332-b09"
 HA_TAR="hadoop-3.2.3.tar.gz"
 HA_DEST="hadoop-3.2.3"
 
-HB_TAR="hbase-2.4.12-bin.tar.gz"
-HB_DEST="hbase-2.4.12"
+HB_TAR="hbase-2.4.15-bin.tar.gz"
+HB_DEST="hbase-2.4.15"
 
 ZK_TAR="apache-zookeeper-3.7.1-bin.tar.gz"
 ZK_DEST="apache-zookeeper-3.7.1-bin"
 
 PH_TAR="phoenix-hbase-2.4-5.1.2-bin.tar.gz"
 PH_DEST="phoenix-hbase-2.4-5.1.2-bin"
+
+HI_TAR="apache-hive-3.1.2-bin.tar.gz"
+HI_DEST="apache-hive-3.1.2-bin"
+
+# JDBC驱动
+JDBC_JAR="mysql-connector-j-8.0.30.jar"
 
 # 下载安装包
 if [ ! -d packages ]; then
@@ -48,8 +54,17 @@ if [[ ! $is_ph_tar != "" ]]; then
     wget -c https://mirrors.bfsu.edu.cn/apache/phoenix/phoenix-5.1.2/$PH_TAR
 fi
 
+is_hi_tar=$(ls | grep $HI_TAR)
+if [[ ! $is_hi_tar != "" ]]; then
+    wget -c https://mirrors.bfsu.edu.cn/apache/hive/hive-3.1.2/$HI_TAR
+fi
 
-if [ ! -e $JDK_TAR ] || [ ! -e $HA_TAR ] || [ ! -e $HB_TAR ] || [ ! -e $ZK_TAR ] || [ ! -e $PH_TAR ]; then
+is_jdbc=$(ls | grep $JDBC_JAR)
+if [[ ! $is_jdbc != "" ]]; then
+    wget -c https://maven.aliyun.com/repository/central/com/mysql/mysql-connector-j/8.0.30/$JDBC_JAR
+fi
+
+if [ ! -e $JDK_TAR ] || [ ! -e $HA_TAR ] || [ ! -e $HB_TAR ] || [ ! -e $ZK_TAR ] || [ ! -e $PH_TAR ] || [ ! -e $HI_TAR ] || [ ! -e $JDBC_JAR ]; then
     echo "Failure: No install packages"
     exit 1
 fi
@@ -67,11 +82,14 @@ cat Dockerfile | sed -e "s/{Hadoop_Src}/$HA_TAR/" \
 -e "s/{Hbase_Src}/$HB_TAR/g" \
 -e "s/{ZK_Src}/$ZK_TAR/g" \
 -e "s/{PH_Src}/$PH_TAR/g" \
+-e "s/{HI_Src}/$HI_TAR/g" \
 -e "s/{Hadoop_Dir}/$HA_DEST/g" \
 -e "s/{JDK_Dir}/$JDK_DEST/g" \
 -e "s/{Hbase_Dir}/$HB_DEST/g" \
 -e "s/{ZK_Dir}/$ZK_DEST/g" \
 -e "s/{PH_Dir}/$PH_DEST/g" \
+-e "s/{HI_Dir}/$HI_DEST/g" \
+-e "s/{JDBC}/$JDBC_JAR/g" \
 -i Dockerfile
 
 # 将映射写入宿主机/etc/hosts
@@ -87,6 +105,12 @@ fi
 
 # 构建容器
 sudo docker build -t 'hadoop-docker' .
+
+# 安装MySQL镜像（用于Hive）
+sudo docker pull mysql:5.7.39
+sudo docker run -itd --name mysql-hive \
+    --net hadoop --ip 172.30.0.10 -p 3306:3306 \
+    -e MYSQL_ROOT_PASSWORD=root mysql:5.7.39
 
 # 运行容器
 sudo docker run --name hadoop-master --hostname master \
