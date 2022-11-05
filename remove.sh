@@ -4,7 +4,6 @@ sudo docker stop hadoop-master hadoop-slave-1 hadoop-slave-2
 
 sudo docker rm mysql-hive
 sudo docker rm hadoop-master hadoop-slave-1 hadoop-slave-2
-sudo docker rmi mysql:5.7.39
 sudo docker rmi hadoop-docker
 sudo docker network rm hadoop
 
