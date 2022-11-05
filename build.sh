@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # 安装文件名称
-JDK_TAR="jdk8u332-b09.tar.gz"
-JDK_DEST="jdk8u332-b09"
+JDK_TAR="jdk8u352-b08.tar.gz"
+JDK_DEST="jdk8u352-b08"
 
 HA_TAR="hadoop-3.2.3.tar.gz"
 HA_DEST="hadoop-3.2.3"
@@ -20,7 +20,7 @@ HI_TAR="apache-hive-3.1.2-bin.tar.gz"
 HI_DEST="apache-hive-3.1.2-bin"
 
 # JDBC驱动
-JDBC_JAR="mysql-connector-j-8.0.30.jar"
+JDBC_JAR="mysql-connector-java-8.0.30.jar"
 
 # 下载安装包
 if [ ! -d packages ]; then
@@ -30,7 +30,7 @@ cd packages
 
 is_jdk_tar=$(ls | grep $JDK_TAR)
 if [[ ! $is_jdk_tar != "" ]]; then
-    wget -c https://mirrors.tuna.tsinghua.edu.cn/Adoptium/8/jdk/x64/linux/OpenJDK8U-jdk_x64_linux_hotspot_8u332b09.tar.gz \
+    wget -c https://mirrors.tuna.tsinghua.edu.cn/Adoptium/8/jdk/x64/linux/OpenJDK8U-jdk_x64_linux_hotspot_8u352b08.tar.gz \
         -O $JDK_TAR
 fi
 
@@ -41,7 +41,7 @@ fi
 
 is_hb_tar=$(ls | grep $HB_TAR)
 if [[ ! $is_hb_tar != "" ]]; then
-    wget -c https://mirrors.bfsu.edu.cn/apache/hbase/2.4.12/$HB_TAR
+    wget -c https://mirrors.bfsu.edu.cn/apache/hbase/2.4.15/$HB_TAR
 fi
 
 is_zk_tar=$(ls | grep $ZK_TAR)
@@ -61,7 +61,7 @@ fi
 
 is_jdbc=$(ls | grep $JDBC_JAR)
 if [[ ! $is_jdbc != "" ]]; then
-    wget -c https://maven.aliyun.com/repository/central/com/mysql/mysql-connector-j/8.0.30/$JDBC_JAR
+    wget -c https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.30/$JDBC_JAR
 fi
 
 if [ ! -e $JDK_TAR ] || [ ! -e $HA_TAR ] || [ ! -e $HB_TAR ] || [ ! -e $ZK_TAR ] || [ ! -e $PH_TAR ] || [ ! -e $HI_TAR ] || [ ! -e $JDBC_JAR ]; then
