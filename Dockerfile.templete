@@ -55,6 +55,7 @@ ENV JAVA_HOME=/usr/local/jdk \
     HIVE_HOME=/usr/local/hive
 ENV PATH $JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$ZOOKEEPER_HOME/bin:$PHOENIX_HOME/bin:$HIVE_HOME/bin:$PATH
 COPY ./config/script/profile /etc/profile
+RUN ln -s $JAVA_HOME/bin/java /bin/java
 
 # 复制配置文件
 COPY ./config/hadoop_config/* $HADOOP_HOME/etc/hadoop/
