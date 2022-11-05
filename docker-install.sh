@@ -2,10 +2,6 @@
 # CentOS 7 Docker install
 
 cd /etc/yum.repos.d
-sudo rm -rf *.repo
-if [ -e CentOS-Base.repo.bak ]; then
-    sudo mv CentOS-Base.repo.bak CentOS-Base.repo
-fi
 sudo sed -e 's|^mirrorlist=|#mirrorlist=|g' \
          -e 's|^#baseurl=http://mirror.centos.org/centos|baseurl=https://mirrors.ustc.edu.cn/centos|g' \
          -i.bak \
@@ -13,12 +9,18 @@ sudo sed -e 's|^mirrorlist=|#mirrorlist=|g' \
 
 sudo yum clean all
 sudo yum makecache
-sudo yum install -y yum-utils
+sudo yum install -y yum-utils --nogpgcheck
 sudo yum-config-manager --add-repo https://mirrors.bfsu.edu.cn/docker-ce/linux/centos/docker-ce.repo
-sudo yum install -y docker-ce docker-ce-cli containerd.io ca-certificates
+sudo yum install -y docker-ce docker-ce-cli containerd.io wget ca-certificates --nogpgcheck
 
 sudo systemctl enable docker.service
 sudo systemctl start docker.service
+
+# docker mirrors
+echo "{\"registry-mirrors\":[\"https://docker.mirrors.ustc.edu.cn/\"]}" | sudo tee /etc/docker/daemon.json
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
 sudo systemctl status docker.service
 sudo docker version
 sudo docker images
