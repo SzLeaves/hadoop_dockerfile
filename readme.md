@@ -84,3 +84,8 @@ sudo docker images
 3. 将源码包中的`phoenix-hbase-compat-x.x.x/src/main/java`文件夹（版本号可以选最新的）下的`org`文件夹复制到maven项目的`src/main/java`文件夹下
 4. 将`config/hbase_config/hbase-site.xml`复制到maven项目的`src/main/resources`文件夹下
 5. 使用Java SQL API测试连接
+
+## 7.使用Hive工具
+在docker容器内运行`hive`命令即可使用  
+安装Hive时已经同时安装了mysql docker作为meta数据库（版本5.7.39），**root密码默认与账户同名**  
+这个mysql容器的地址绑定在新建的docker网卡上，默认访问地址为`172.30.0.10:3306`
